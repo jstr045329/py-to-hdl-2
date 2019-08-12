@@ -27,11 +27,17 @@ class Entity:
             self.resets.add(DEFAULT_GLOBAL_RESET_NAME)
             self.global_rst = DEFAULT_GLOBAL_RESET_NAME
         self.inputs = set()
+        self.inputs_declared = set()
+        self.inputs_used = set()
         self.outputs = set()
-        self.declared_inputs = set()
-        self.declared_outputs = set()
+        self.outputs_declared = set()
+        self.outputs_used = set()
         self.signals = set()
+        self.signals_assigned = set()
+        self.signals_used = set()
         self.generics = set()
+        self.generics_assigned = set()
+        self.generics_used = set()
         self.components = set()
         self.child_modules = set()
         self.child_instances = []
@@ -75,26 +81,51 @@ class Entity:
             if one_sig.should_route_source():
                 new_sig = deepcopy(one_sig)
                 new_sig.layers_to_route_source -= 1
-                new_sig.name = ""  # todo: finish this
+                new_sig.name.replace("_s_", "_i_")
+                # todo: Use the input to drive the signal.
                 self.inputs.add(new_sig)
             if one_sig.should_route_sink():
                 new_sig = deepcopy(one_sig)
                 new_sig.layers_to_route_source -= 1
-                new_sig.name = ""  # todo: finish this
+                new_sig.name.replace("_s_", "_o_")
+                # todo: Use the signal to drive the output.
                 self.outputs.add(new_sig)
         for one_port_map in self.port_maps:
             for a, b in zip(one_port_map.module_ports, one_port_map.map_to):
                 if b == "__route_out__":
                     new_sig = deepcopy(a)
-                    if new_sig.should_route_source:
+                    if new_sig.should_route_source():
                         if new_sig.layers_to_route_source < Inf:
                             new_sig.layers_to_route_source -= 1
+                    else:
+                        # todo: Create a signal in this module, and track whether
+                        #       it was assigned. If not, prompt user to enter code
+                        #       that will resolve the issue. Dump user input into
+                        #       a text file so user can paste it into .py file
+                        #       later.
+                        pass
+
                     if new_sig.should_route_sink:
-                        if new_sig.layers_to_route_sink:
+                        if new_sig.layers_to_route_sink():
                             new_sig.layers_to_route_sink -= 1
+                    else:
+                        # todo: Create a signal in this module, and source that signal
+                        #       with this output. If not, prompt user to enter code
+                        #       that will resolve the issue. Dump user input into
+                        #       a text file so user can paste it into .py file
+                        #       later.
+                        pass
+
+                elif b == "__open__":
+                    if a.is_input:
+                        one_port_map.inputs_assigned.add(a)
+                    elif a.is_output:
+                        one_port_map.outputs_assigned.add(a)
+                    elif a.is_generic:
+                        one_port_map.generics_assigned.add(a)
                 else:
                     # todo: finish this
-                    raise NotImplemented()
+                    pass
 
     def set_as_top_level(self):
         self.double_buffer_inputs = True
@@ -118,6 +149,14 @@ class Entity:
     def set_as_unclocked(self):
         self.disable_clk_rendering = True
         self.is_synchronous = False
+
+    def __hash__(self):
+        # todo: finish this
+        raise NotImplemented()
+
+    def __eq__(self, other):
+        # todo: finish this
+        raise NotImplemented()
 
     def render_declaration_vhdl(self):
         raise NotImplemented()
