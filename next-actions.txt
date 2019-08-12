@@ -1,0 +1,4 @@
+Create a hierarchy of entities 5 deep.
+    Show that one signal can be automatically routed up 2 layers, and another, all the way to the top.
+
+Write an algorithm that takes a
