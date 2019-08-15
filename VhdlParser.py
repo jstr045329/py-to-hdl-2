@@ -47,7 +47,6 @@ def scan_one_file(filename):
         los = bigstr.split()
         ports = []
         generics = []
-        # for one_tok in los:
         for i in range(len(los)):
             one_tok = los[i]
             if one_tok == "port":
