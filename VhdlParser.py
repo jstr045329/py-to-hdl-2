@@ -156,8 +156,6 @@ def extract_generics(short_list):
             if state == 0:
                 this_name = shrt_token
             elif state == 1:
-            #     state = 2
-            # elif state == 2:
                 this_type = shrt_token
                 new_generic = make_one_generic(this_name, this_type)
                 generics.append(new_generic)
