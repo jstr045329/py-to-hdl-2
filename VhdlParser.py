@@ -196,22 +196,35 @@ def scan_one_file(filename):
         bigstr = f.read()
         bigstr = guarantee_whitespace(bigstr)
         los = bigstr.split()
+        ent_list = []
+        port_dictionary = {}
+        generic_dictionary = {}
         for i in range(len(los)):
             one_tok = los[i]
-            if one_tok == "port":
-                ports = extract_ports(los[i:])
+            # print(one_tok)
+            if one_tok == "entity":
+                module_name = los[i+1]
+                ent_list.append(module_name)
+            elif one_tok == "port":
+                port_dictionary[module_name] = extract_ports(los[i:])
             elif one_tok == "generic":
-                generics = extract_generics(los[i:])
+                generic_dictionary[module_name] = extract_generics(los[i:])
+    return ent_list, port_dictionary, generic_dictionary
 
-    return ports, generics
-
+# todo: Extend this to capture multiple entities in the same file
 
 if __name__ == "__main__":
-    p, g = scan_one_file("./vhdl_literals/vhd_test.vhd")
-    for one_generic in g:
-        print(str(one_generic))
-    for one_port in p:
-        print(str(one_port))
+    nd, pd, gd = scan_one_file("./vhdl_literals/vhd_test.vhd")
+    # print(nd)
+    for one_entity in nd:
+        print("module name:     ", one_entity)
+        g = gd[one_entity]
+        p = pd[one_entity]
+        for one_generic in g:
+            print(str(one_generic))
+        for one_port in p:
+            print(str(one_port))
+        print("\n"*6)
 
 
 
