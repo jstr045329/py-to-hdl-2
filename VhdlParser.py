@@ -17,7 +17,7 @@ def is_int(x):
 
 
 def make_one_port(name, dir, dtype, width):
-    # assert(dir == "in" or dir == "out" or dir == "inout")
+    assert(dir == "in" or dir == "out" or dir == "inout")
     return {
         "name": name,
         "direction": dir,
@@ -40,12 +40,6 @@ def make_one_generic(name, dtype, width):
     }
 
 
-# LOOKING_FOR_ENTITY_DECLARATION = "LOOKING_FOR_ENTITY_DECLARATION"
-# FOUND_ENTITY = "FOUND_ENTITY"
-# EATING_GENERICS = "EATING_GENERICS"
-# EATING_PORTS = "EATING_PORTS"
-
-
 def scan_one_file(filename):
     with open(filename, 'r') as f:
         bigstr = f.read()
@@ -60,11 +54,12 @@ def scan_one_file(filename):
                 short_list = los[i:]
                 paren_depth = 0
                 state = 0
-                prev_state = 0
-                prev_paren_depth = 0
+                state_history = [0]*100
+                paren_depth_history = [0]*100
                 new_port = None
                 enable_width_detection = True
                 for shrt_token in short_list:
+                    # print("token:", shrt_token, "       depth: ", paren_depth)
                     if shrt_token == "(":
                         paren_depth += 1
                     elif shrt_token == ")":
@@ -101,13 +96,11 @@ def scan_one_file(filename):
                                 enable_width_detection = False
                                 new_port["width"] = this_width
                     # if (state == 0 and prev_state != 0) or (paren_depth == -1):
-                    if paren_depth == -1:
+                    if shrt_token == ";" and paren_depth == 0:
                         break
 
-                    prev_state = state
-                    prev_paren_depth = paren_depth
-
-
+                    state_history.append(state)
+                    paren_depth_history.append(paren_depth)
 
             elif one_tok == "port":
                 short_list = los[i:]
