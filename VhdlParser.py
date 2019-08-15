@@ -29,15 +29,15 @@ def make_one_port(name, dir, dtype):
     }
 
 
-def make_one_generic(name, dtype, width):
-    assert(dir == "in" or dir == "out" or dir == "inout")
+def make_one_generic(name, dtype):
     return {
         "name": name,
         "direction": "in",
         "datatype": dtype,
-        "width": width,
+        "width": "1",
+        "default_value": "",
         "is_port": False,
-        "is_generic": True
+        "is_generic": True,
     }
 
 
@@ -156,8 +156,8 @@ def extract_generics(short_list):
             if state == 0:
                 this_name = shrt_token
             elif state == 1:
-                state = 2
-            elif state == 2:
+            #     state = 2
+            # elif state == 2:
                 this_type = shrt_token
                 new_generic = make_one_generic(this_name, this_type)
                 generics.append(new_generic)
@@ -202,16 +202,17 @@ def scan_one_file(filename):
             one_tok = los[i]
             if one_tok == "port":
                 ports = extract_ports(los[i:])
-            elif one_tok == "port":
-                short_list = los[i:]
+            elif one_tok == "generic":
+                generics = extract_generics(los[i:])
 
-    return ports
-
-
+    return ports, generics
 
 
 if __name__ == "__main__":
-    for one_port in scan_one_file("./vhdl_literals/vhd_test.vhd"):
+    p, g = scan_one_file("./vhdl_literals/vhd_test.vhd")
+    for one_generic in g:
+        print(str(one_generic))
+    for one_port in p:
         print(str(one_port))
 
 
