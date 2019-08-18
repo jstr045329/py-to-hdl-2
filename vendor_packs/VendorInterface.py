@@ -4,11 +4,10 @@ who have hardware from different vendors to flesh this out."""
 
 class ClockManager:
     def __init__(self):
-        raise notimplemented()
-        pass
+        raise NotImplemented()
 
     def declare(self):
-        raise notimplemented()
+        raise NotImplemented()
 
     def render(self):
         raise NotImplemented()
@@ -16,7 +15,7 @@ class ClockManager:
 
 class ClockBuffer:
     def __init__(self):
-        raise notimplemented()
+        raise NotImplemented()
 
     def declare(self, differential=False):
         raise NotImplemented()
@@ -27,7 +26,7 @@ class ClockBuffer:
 
 class InputBuffer:
     def __init__(self):
-        raise notimplemented()
+        raise NotImplemented()
 
     def declare(self, differential=False):
         raise NotImplemented()
@@ -38,7 +37,7 @@ class InputBuffer:
 
 class OutputBuffer:
     def __init__(self):
-        raise notimplemented()
+        raise NotImplemented()
 
     def declare(self, differential=False):
         raise NotImplemented()
@@ -49,7 +48,7 @@ class OutputBuffer:
 
 class RamController:
     def __init__(self):
-        raise notimplemented()
+        raise NotImplemented()
 
     def declare(self, differential=False):
         raise NotImplemented()

@@ -119,6 +119,8 @@ def extract_ports(short_list):
 
 
 def extract_generics(short_list):
+    """This looks superficially similar to extract_ports() above, but do not be
+    deceived. The FSM has 1 less state because generics are always inputs."""
     generics = []
     paren_depth = 0
     state = 0

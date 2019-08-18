@@ -7,12 +7,6 @@ class PortMap:
         self.module_ports = []
         self.map_to = []
         self.module_name = module_name
-        self.inputs = set()
-        self.inputs_assigned = set()
-        self.outputs = set()
-        self.outputs_assigned = set()
-        self.generics = set()
-        self.generics_assigned = set()
 
     def add_edge(self, one_module_port, one_dest_port="__route_out__"):
         assert(one_module_port not in self.module_ports)

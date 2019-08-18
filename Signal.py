@@ -12,7 +12,8 @@ class Signal:
                  clk_to_sync_with=None,
                  expr="",
                  default_val=None,
-                 width=1):
+                 width=1,
+                 datatype="std_logic"):
         self.name = nm
         self.speed = speed
         self.width = width
@@ -20,9 +21,9 @@ class Signal:
         self.layers_to_route_source = layers_to_route_source
         self.layers_to_route_sink = layers_to_route_sink
         self.parent = None
-        self.drive_with_differential_buf = False
-        self.sink_to_differential_buf = False
-        self.drive_with_top_level_buf = False
+        self.drive_with_differential_buf = False            #  todo: think whether this is the best way to do this
+        self.sink_to_differential_buf = False               #  todo: think whether this is the best way to do this
+        self.drive_with_top_level_buf = False               #  todo: think whether this is the best way to do this
         self.sink_to_top_level_buf = False
         self.enforce_single_driver = True
         self.sources = set()
@@ -37,6 +38,7 @@ class Signal:
         self.is_generic = False
         self.is_signal = True
         self.number_of_receivers = 0
+        self.datatype = datatype
 
         if self.drive_with_top_level_buf:
             self.layers_to_route_source = Inf
@@ -104,12 +106,12 @@ class Signal:
         # todo: finish this
         raise NotImplemented()
 
-    def __hash__(self):
-        # todo: finish this
-        pass
-
-    def __eq__(self, other):
-        # todo: finish this
-        pass
+    # def __hash__(self):
+    #     # todo: finish this
+    #     pass
+    #
+    # def __eq__(self, other):
+    #     # todo: finish this
+    #     pass
 
 
