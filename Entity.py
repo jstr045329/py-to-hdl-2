@@ -209,7 +209,6 @@ class Entity:
         else:
             the_datatype = self.accurate_datatype
         y = []
-        y.append(eol())
         y.append("library IEEE;")
         y.append("use IEEE.std_logic_1164.all;")
         y.append(eol())
@@ -282,6 +281,8 @@ class Entity:
             y.append(one_signal.name + " <= " + self.expressions_by_name[one_signal.name] + ";")
         y.append(eol())
         y.append("end " + self.module_name + "_arch;")
+        y.append(eol())
+        y.append(eol())
         return y
 
     def render_module_verilog(self):
@@ -291,7 +292,7 @@ class Entity:
         raise NotImplemented
 
 
-def test_entity():
+def test_entity(results_file="./vhdl_generated/test_entity.vhd"):
     uut1 = Entity("my_fancy_box", default_clk="clk_100")
     # uut1.favor_fast_sim = True
     uut1.add_generic("width", datatype="integer")
@@ -341,9 +342,13 @@ def test_entity():
     uut1.instantiate_module(test_port_map1)
     uut1.instantiate_module(test_port_map2)
 
-    for one_line in uut1.render_module_vhdl():
-        print(one_line)
+    import os
+    with open(results_file, "w") as f:
+        for one_line in uut1.render_module_vhdl():
+            f.write(one_line)
+            f.write(os.linesep)
     # todo: change sets to lists
+    # todo: make function names consistent
 
 if __name__ == "__main__":
     test_entity()
