@@ -2,7 +2,8 @@ import os
 
 
 def eol(n=1):
-    return os.linesep * n
+    return ""
+    # return os.linesep * n
 
 
 def whitespace(n):
