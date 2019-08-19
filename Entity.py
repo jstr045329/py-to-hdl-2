@@ -226,6 +226,7 @@ class Entity:
                 i += 1
 
         y.append(tab() + "port(")
+        i = 0
         for one_input in self.inputs:
             one_str = tab(2) + one_input.name + " :  in " + the_datatype + "_vector(" + \
                       str(one_input.width-1) + " downto 0);"
@@ -330,6 +331,8 @@ def test_entity(results_file="./vhdl_generated/test_entity.vhd"):
     test_port_map1.add_edge("sub_mod_output_001", "some_sig_1")
     test_port_map1.add_edge("sub_mod_output_002", "some_sig_2")
     test_port_map1.add_edge("sub_mod_output_003", "some_sig_3")
+    test_port_map1.map_generic("width", "42")
+    test_port_map1.map_generic("depth", "88")
 
     test_port_map2 = PortMap("my_fancy_submodule", "inst_0002")
     test_port_map2.add_edge("sub_mod_input_001", "my_in_1")
@@ -338,6 +341,7 @@ def test_entity(results_file="./vhdl_generated/test_entity.vhd"):
     test_port_map2.add_edge("sub_mod_output_001", "some_sig_4")
     test_port_map2.add_edge("sub_mod_output_002", "some_sig_5")
     test_port_map2.add_edge("sub_mod_output_003", "some_sig_6")
+    test_port_map2.map_generic("width", "42")
 
     uut1.instantiate_module(test_port_map1)
     uut1.instantiate_module(test_port_map2)
