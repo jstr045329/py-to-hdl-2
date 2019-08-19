@@ -1,6 +1,7 @@
 from copy import deepcopy
 from EngineeringUnits import Inf
 from ParseExpression import parse_expression
+from PortMap import PortMap
 from Signal import Signal
 from ValidateMode import validate_mode
 from WhiteSpaceTools import eol, tab
@@ -97,10 +98,8 @@ class Entity:
             c.fast_datatype = self.fast_datatype
             c.favor_fast_sim = self.favor_fast_sim
 
-    def instantiate_child(self, one_portmap):
-        """Pass in the port map through kwargs"""
-        # todo: finish this
-        pass
+    def instantiate_module(self, one_portmap):
+        self.port_maps.append(one_portmap)
 
     def set_as_unclocked(self):
         self.disable_clk_rendering = True
@@ -274,6 +273,11 @@ class Entity:
                 y.append(tab() + "end if;")
                 y.append("end process;")
                 y.append(eol())
+
+        for one_port_map in self.port_maps:
+            y.extend(one_port_map.render_vhdl())
+            y.append(eol())
+
         for one_signal in self.outputs:
             y.append(one_signal.name + " <= " + self.expressions_by_name[one_signal.name] + ";")
         y.append(eol())
@@ -310,10 +314,36 @@ def test_entity():
     uut2.add_output("sub_mod_output_002")
     uut2.add_output("sub_mod_output_003")
 
+    uut3 = Entity("just_an_and_gate", default_clk="clk_300")
+    uut3.add_input("a")
+    uut3.add_input("b")
+    uut3.add_output("q")
+
     uut1.add_module(uut2)
+    uut1.add_module(uut3)
+
+    test_port_map1 = PortMap("my_fancy_submodule", "inst_0001")
+    test_port_map1.add_edge("sub_mod_input_001", "my_in_1")
+    test_port_map1.add_edge("sub_mod_input_002", "my_in_2")
+    test_port_map1.add_edge("sub_mod_input_003", "my_in_3")
+    test_port_map1.add_edge("sub_mod_output_001", "some_sig_1")
+    test_port_map1.add_edge("sub_mod_output_002", "some_sig_2")
+    test_port_map1.add_edge("sub_mod_output_003", "some_sig_3")
+
+    test_port_map2 = PortMap("my_fancy_submodule", "inst_0002")
+    test_port_map2.add_edge("sub_mod_input_001", "my_in_1")
+    test_port_map2.add_edge("sub_mod_input_002", "my_in_2")
+    test_port_map2.add_edge("sub_mod_input_003", "my_in_3")
+    test_port_map2.add_edge("sub_mod_output_001", "some_sig_4")
+    test_port_map2.add_edge("sub_mod_output_002", "some_sig_5")
+    test_port_map2.add_edge("sub_mod_output_003", "some_sig_6")
+
+    uut1.instantiate_module(test_port_map1)
+    uut1.instantiate_module(test_port_map2)
+
     for one_line in uut1.render_module_vhdl():
         print(one_line)
-
+    # todo: change sets to lists
 
 if __name__ == "__main__":
     test_entity()
